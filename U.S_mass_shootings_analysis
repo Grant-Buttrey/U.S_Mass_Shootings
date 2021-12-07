@@ -1,0 +1,137 @@
+---
+title: "Project_3b"
+author: "Grant Buttrey"
+date: "11/11/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+
+
+shootings <- read.csv("USMassShootings.csv")
+```
+
+1. Describe your dataset. Give the source and a metadata listing for each variable. In other words,
+list the names of the variables, types, and brief descriptions of values if needed. This answer is just
+text (in a list format) – no code needed.
+
+The dataset is a compilation of every mass shooting ever recorded. It's also important to know what a "mass shooting" is defined as. According to the FBI, a mass shooting is an event where 4 or more people are victims of a shooting. A variable listed is Gender (factor), which tells if the shooter was a male or a female. Another variable is race (factor), which tells the face of the shooter. Another variable is location (factor), which tells the location of the shooter by city and state. Another variable is the date (factor), which tells when the shooting occured. Another variable is fatalities (integer), which counts how many people were killed during the shooting. A similar variable is wounded (integer), which counts the number of people wounded, but not killed, during the shooting. Another similar variable is the total victims (integer), which counts the total number of victims of the shooting. Another variable is location type (factor), which tells the type of location such as schools, religious places, mililitary, etc. Another variable is prior signs of mental illness (factor), which tells us if the shooter had signs of mental illness before the shooting. Another varible is weapons obtained legally (factor), which tells us if the shooter obtained a gun legally or not. Another variable is where weapon obtain (factor), describes where the gun was purchased. Another variable was type of weapon (factor), it tells what weapons were used during the shooting such as handgun, rifle, shotgun, etc.  
+
+2. Give three questions about your dataset that you are going to investigate. Your questions should
+address both variation and covariation. This answer is just text – no code needed. 
+
+a. What type of gun is used most in mass shootings? 
+
+b. Is there a corelation between the type of gun used and the total number of victims/fatalities?
+
+c. Were the majority of guns obtained illegally or legally and where did they obtain them? 
+
+3. Perform EDA to answer your research questions. Your EDA should:
+• Use dplyr()
+• Use ggplot2 to visualize the data. Visualizations should be compelling/interesting and include
+labels, appropriate color, axes limits, etc.
+• Use at least two of the following depending on your questions of interest: geom_histogram,
+geom_bar, geom_boxplot, geom_point, geom_tile
+• Map the variables to aesthetics appropriately (coordinates, color, shape, size )
+• Include appropriate visualizations depending on variable type (quantitative or categorical) and
+research question asked. Make sure visualizations show the answer to your research questions.
+• A research question may need more than one dplyr command and/or one visualization to
+answer it. For example, if a research question leads to another related question, you will need
+more than one dplyr command/visualization to answer the original and related question.
+
+a.
+```{r}
+shootings$TYPEOFWEAPONS <- as.character(shootings$TYPEOFWEAPONS)
+
+ shootings <- shootings %>%
+mutate(TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two handguns and a butcher knife", "Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS == "Sawed-off shotgun, 2 boxes of shells; also a .45-caliber handgun taken from a security guard he shot at the scene.", "Shotgun and Handgun"),TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  	"9mm semi-automatic handgun", "Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Assault rifle, high capacity magazines, antique handgun", "Rifle and Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Semiautomatic handgun, shotgun", "Shotgun and Handgun"),  TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two semiautomatic handguns, one rifle (assault), one shotgun (assault)", "Shotgun, Handgun, and Rifle"),TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "2 assault rifles; semiautomatic handgun", "Rifle and Handgun"),TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One semiautomatic handgun", "Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two semiaustomatic handguns, one rifle (assault), one shotgun", "Shotgun, Handgun, and Rifle"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two semiautomatic handguns", "Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two semiautomatic handguns, one revolver", "Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two rifles (both assault), one revolver", "Rifle and Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One revolver, one shotgun", "Shotgun and Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Three semiautomatic handguns, one shotgun", "Shotgun and Handgun"),  TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One rifle (assault)", "Rifle"),  TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Semi-Automatic Rifle and Handgun", "Rifle and Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two semiautomatic handguns, one rifle (assault), one shotgun", "Shotgun, Handgun, and Rifle"),  TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One semiautomatic handgun, one revolver", "Handgun"),  TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One semiautomatic handgun, one rifle, one shotgun", "Shotgun, Handgun, and Rifle"),  TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two semiautomatic handguns, one shotgun", "Shotgun and Handgun"),  TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One semiautomatic handgun, two rifles, one derringer, one shotgun", "Shotgun, Handgun, and Rifle"),  TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two rifles, one revolver, one shotgun", "Shotgun, Handgun, and Rifle"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One semiautomatic handgun, one rifle (assault), one shotgun", "Shotgun, Handgun, and Rifle"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Three semiautomatic handguns, one revolver", "Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One semiautomatic handgun (assault), one rifle (assault), two shotguns", "Shotgun, Handgun, and Rifle"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two semiautomatic handguns, two rifles, three revolvers, two derringers", "Rifle and Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Semi-Automatic Rifle", "Rifle"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two semiautomatic handguns, one rifle", "Rifle and Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One rifle, two shotguns", "Rifle and Shotgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two semiautomatic handguns, two rifles, three revolvers, two derringers", "Rifle and Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Three semiautomatic handguns (two assault)", "Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One rifle, one shotgun", "Rifle and shotgun"))
+
+ shootings <- shootings %>%
+  mutate(TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One rifle", "Rifle"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One revolver", "Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One rifle, one revolver", "Rifle and Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Three semiautomatic handguns (two assault), one rifle (assault), one revolver", "Rifle and Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Two semiautomatic handguns, one rifle, two revolvers, two shotguns", "Shotgun, Handgun, and Rifle"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One semiautomatic handgun, one rifle (assault)", "Rifle and Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "One rifle, one revolver, one shotgun", "Shotgun, Handgun, and Rifle"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Three semiautomatic handguns", "Handgun"), TYPEOFWEAPONS = replace(TYPEOFWEAPONS, TYPEOFWEAPONS ==  "Rifle and shotgun", "Rifle and Shotgun"))
+
+ggplot(data = shootings) + 
+  geom_bar(mapping = aes(x = TYPEOFWEAPONS, fill = TYPEOFWEAPONS))+
+  coord_flip()
+
+shootings %>%
+select(TYPEOFWEAPONS) %>%
+  filter(TYPEOFWEAPONS == "Handgun") %>%
+  table()
+
+shootings %>%
+  select(TYPEOFWEAPONS) %>%
+  filter(TYPEOFWEAPONS == "Rifle")%>%
+  table()
+
+shootings%>%
+  select(TYPEOFWEAPONS)%>%
+  filter(TYPEOFWEAPONS == "Rifle and Shotgun")%>%
+  table()
+
+shootings %>%
+  select(TYPEOFWEAPONS)%>%
+  filter(TYPEOFWEAPONS == "Rifle and Handgun") %>%
+  table()
+
+```
+b.
+```{r}
+ggplot(data = shootings, mapping = aes(x = TYPEOFWEAPONS, y = TOTALVICTIMS)) + 
+  geom_boxplot() +
+  coord_flip()
+
+shootings %>%
+  select(TYPEOFWEAPONS, TOTALVICTIMS)
+
+ggplot(data = shootings, mapping = aes(x=TYPEOFWEAPONS,y=TOTALVICTIMS)) + geom_point( aes(color = TYPEOFWEAPONS )) + geom_smooth(method = "lm")+
+  coord_flip()
+```
+
+c.
+```{r}
+#shootings %>%
+#select(WEAPONSOBTAINEDLEGALLY)%>%
+#filter(WEAPONSOBTAINEDLEGALLY == "Yes")%>%
+
+
+shootings$WHEREWEAPONOBTAINED <- as.character(shootings$WHEREWEAPONOBTAINED)
+shootings <- shootings %>%
+mutate(WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "On the internet, via Armslist.com", "Online"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Shooter's Choice gun store in West Columbia, South Carolina", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Gun was his father's.", "Stolen"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Unknown", "NA"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Sharpshooters Small Arms Range", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Florida Gun Center", "Gunshop"), WHEREWEAPONOBTAINED  = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Assembled a rifle out of component parts.", "NA"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Frank's Guns in Marcy, NY", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Stolen from mother", "Stolen"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "On the internet, via Armslist.com", "Online"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Gander Mountain stores in Thornton and Aurora, Colo.; Bass Pro Shop in Denver, Colo.; BulkAmmo.com", "Sporting goods store"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Bull's Eye Shooter Supply in Tacoma, Wash.", "Gunshop"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Bullseye in Castro Valley, Calif.", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Purchased from an individual", "FFA Exchange"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Sportsmen's Warehouse in Tucson, Ariz.", "Sporting goods store"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Gun dealer in East Windsor, Conn.", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Stolen from an individual in Seattle.", "Stolen"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Guns Galore in Kileen, Texas", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Gander Mountain in Johnson City, N.Y.", "Sporting goods store"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Local sporting goods stores and individuals", "Sporting goods store and FFA Exchange"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Online and gun retailers in Champaign, Ill. ", "Online and Gunshops"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Taken in burglary and from fallen police officer", "Stolen"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Stolen from grandfather", "Stolen"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Issued by Forest County Sheriff's Department", "Police issued"))
+
+shootings <- shootings%>%
+mutate (WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Purchased variously online and from Roanoke Firearms in Roanoke, Va.", "Online and Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Purchased variously from Sportsman's Fast Cash in West Valley City, Utah and individuals ", "Sporting goods store and Individuals"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Local stores in Nickel Mines, Penn. ", "Gunshop"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Various sporting goods stores in Kalispell, Mont.", "Sporting goods store"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Pawn shops in Grants and Gallup, N.M.", "Pawnshop"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Glock and Remington stolen from grandfather", "Stolen"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Gun dealer in Waukesha, Wis.", "Gunshop"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Received as a gift from mother", "Relative"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Some purchased from Pepper Sports in Glen Ellyn, Ill. ", "Sporting goods store"),  WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "One purchased from Big E's in Tampa, Fla.", "Gunshop"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Hunting Supplies of Hawaii (The Armory) in Honolulu, Hawaii", "Sporting goods store"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "One purchased from Big E's in Tampa, Fla.", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Trader's Village flea market in Grand Prairie, Texas", "Flea Market"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Glock purchased from gun store in Warner Robins, Ga. ", "Gunshop"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Purchased variously at Tanner Gun Show in Denver, Colo. and from an individual", "Gunshow and FFA exchange"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Purchased variously from friend and father, and stolen from father", "Stolen and FFA exchange"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Stolen from grandfather and father", "Stolen"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "B&B Gun Sales in Orange County, Calif.", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Relative", "Stolen"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Gun dealer in Spokane, Wash.", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Turner's Outdoorsman in Signal Hill, Calif. ", "Sporting goods store"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Super Pawn and Pacific Tactical Weapons, both in Las Vegas, Nev.", "Pawnshop and Gunshop"),WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Mumford Sports in Litchfield, Ohio", "Sporting goods store"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Local gun retailer", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Local gun store", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Fin & Feather in Iowa City, Iowa", "Sporting goods store"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Mike's Gun Shop in Henderson, Nev.", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "AK-47 purchased from Tilford's Gun Sales in Louisville, Ky. ", "Gunshop"))
+
+shootings <- shootings%>%
+mutate (WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Purchased variously online and from Roanoke Firearms in Roanoke, Va.", "Online and Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Sandy Trading Post in Sandy, Ore.; Hunter Loan and Jewelry Co. in Stockton, Calif.", "FFA exchange"),  WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Various sporting goods and gun stores in Northern California", "Sporting goods store and Gunshop"),  WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Gun store in Norwood, Ohio; The Oaks Trading Post in Melbourne, Fla.", "Gunshop"),  WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Issued by Oklahoma National Guard, where Sherrill served, for target competition  ", "Police Issued"),  WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Hines Boulevard Pawn Shop in Dallas, Texas", "Pawnshop"),  WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "Garcia Gun Center in Hialeah, Fla.", "Gunshop"), WHEREWEAPONOBTAINED = replace(WHEREWEAPONOBTAINED, WHEREWEAPONOBTAINED ==  "FFA exchange", "FFA Exchange"))
+
+ggplot(data = shootings) + 
+  geom_bar(mapping = aes(x = WHEREWEAPONOBTAINED, fill = WHEREWEAPONOBTAINED))+
+  coord_flip()
+
+shootings <- shootings %>%
+  mutate(WEAPONSOBTAINEDLEGALLY = replace(WEAPONSOBTAINEDLEGALLY, WEAPONSOBTAINEDLEGALLY == "", "NA"))
+
+shootings %>%
+  select(WHEREWEAPONOBTAINED)%>%
+  filter(WHEREWEAPONOBTAINED == "NA")%>%
+  table()
+
+ggplot(data = shootings) + 
+  geom_bar(mapping = aes(x = WEAPONSOBTAINEDLEGALLY, fill = WEAPONSOBTAINEDLEGALLY))
+
+table(shootings$WHEREWEAPONOBTAINED)
+
+table(shootings$WEAPONSOBTAINEDLEGALLY)
+```
+
+4. Write a two paragraph summary about what your EDA is telling you about your data. This answer
+is just text – no code 
+
+I first asked my self the question "What type of gun is used most in mass shootings?" Once I started to look into the data the answer was pretty clear. Hands down, the most common weapon used in mass shootings were handguns, accounting for about 52% of mass shootings. That 52% doesn't even account for the number of shootings in which handguns were used along side with other guns. But Rifles alone only account for about 7% of mass shootings. When used along side other weapons rifles account for about 19% of mass shootings. The second question I asked myself was is there a corelation between the type of gun used and the total number of victims/fatalities? After digging into that I found out that there is no correlation between the type of weapons used in a shooting and the number of victims. The real relationshop is number of guns and the number of victims. It seems that if the shooter used more/different types of guns more people were hurt/killed. 
+
+The last thing I asked myself was were the majority of guns obtained illegally or legally and where did they obtain them? Believe it or not, most of the weapons were obtained legally (79%). But when I looked at where the guns were obtained, the data showed that there were 17(24%) shootings where they didn't know where the guns came from. The majority of the guns came from gunshops and sporting goods stores, which accounted for about 41%. Or the guns were stolen, which accounted for about 13%. 
